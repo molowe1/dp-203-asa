@@ -1,0 +1,17 @@
+{
+	"name": "partition exampl",
+	"properties": {
+		"content": {
+			"query": "select * from [dbo].[pool_table]\n\n-- Lab - Partitioned Tables\n\nSELECT FORMAT(Time,'yyyy-MM-dd') AS dt,COUNT(*) AS 'Number of Operations' FROM [dbo].[pool_table]\nGROUP BY FORMAT(Time,'yyyy-MM-dd')\n\n-- Let's drop the existing table if its exists\nDROP TABLE [dbo].[pool_table]\n\n-- Let's create a new table with partitions\n\nCREATE TABLE [dbo].[pool_table]\n(\n\t[CorrelationId] [varchar](200)  NULL,\n\t[OperationName] [varchar](200)  NULL,\n\t[Status] [varchar](100)  NULL,\n\t[EventCategory] [varchar](100)  NULL,\n\t[Level] [varchar](100)  NULL,\n\t[Time] [datetime]  NULL,\n\t[Subscription] [varchar](200)  NULL,\n\t[EventInitiated by] [varchar](1000)  NULL,\n\t[ResourceType] [varchar](1000)  NULL,\n\t[ResourceGroup] [varchar](1000)  NULL,\n\t[Resource] [varchar](2000)  NULL\n)\nWITH  \n(   \n    DISTRIBUTION = HASH ([Operationname]),\n    PARTITION ( [Time] RANGE RIGHT FOR VALUES\n            ('2023-01-01','2023-02-01','2023-03-01','2023-04-01'))\n)\n\n-- You will see 5 partitions , one is for those values prior to 2023-01-01\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dp2003pooldemo",
+				"poolName": "dp2003pooldemo"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

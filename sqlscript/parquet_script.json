@@ -1,0 +1,17 @@
+{
+	"name": "parquet_script",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'parquet_datalakedemodp203_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [parquet_datalakedemodp203_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://parquet@datalakedemodp203.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE [parquet] (\n\t[Correlationid] nvarchar(4000),\n\t[Operationname] nvarchar(4000),\n\t[Status] nvarchar(4000),\n\t[Eventcategory] nvarchar(4000),\n\t[Level] nvarchar(4000),\n\t[Time] nvarchar(4000),\n\t[Subscription] nvarchar(4000),\n\t[Eventinitiatedby] nvarchar(4000),\n\t[Resourcetype] nvarchar(4000),\n\t[Resourcegroup] nvarchar(4000),\n\t[Resource] nvarchar(4000)\n\t)\n\tWITH (\n\tLOCATION = 'log.parquet',\n\tDATA_SOURCE = [parquet_datalakedemodp203_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM [parquet]\nGO\n\nSELECT [Operationname] , COUNT([Operationname]) as [Operation Count]\nFROM [parquet]\nGROUP BY [Operationname]\nORDER BY [Operation Count] desc",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dummy_table",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "copy-command-parquet",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE [parquet_poolv2] (\n\t[Correlationid] nvarchar(4000),\n\t[Operationname] nvarchar(4000),\n\t[Status] nvarchar(4000),\n\t[Eventcategory] nvarchar(4000),\n\t[Level] nvarchar(4000),\n\t[Time] nvarchar(4000),\n\t[Subscription] nvarchar(4000),\n\t[Eventinitiatedby] nvarchar(4000),\n\t[Resourcetype] nvarchar(4000),\n\t[Resourcegroup] nvarchar(4000),\n\t[Resource] nvarchar(4000)\n\t)\n\ncopy into [parquet_poolv2] from 'https://datalakedemodp203.blob.core.windows.net/parquet'\nwith (\n        file_type = 'parquet',\n        CREDENTIAL=(IDENTITY='Storage Account Key', SECRET='aTVPvtKPOE2ZdZm8o2uCG42KJM93qYnySCktFMb5TEjQiNbAoTf35s1Ha1ATgAg12cPbXxki7In++AStaTR/Uw==')\n)\n\nSELECT * FROM [parquet_poolv2]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dp2003pooldemo",
+				"poolName": "dp2003pooldemo"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

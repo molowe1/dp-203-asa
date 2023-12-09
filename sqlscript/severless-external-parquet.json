@@ -1,0 +1,17 @@
+{
+	"name": "severless-external-parquet",
+	"properties": {
+		"content": {
+			"query": "create DATABASE [db-parquet]\n\ncreate master key encryption by PASSWORD = 'dp203@password' --encrypt the password\n\ncreate database scoped credential sastoken\nwith identity = 'shared access signature'\n, secret = 'sv=2022-11-02&ss=b&srt=sc&sp=rwlac&se=2023-08-30T22:53:33Z&st=2023-08-09T14:53:33Z&spr=https&sig=Gw3zWqaN8HekkmIJ2yH2JJbEpVzxFGpNR54oNyCNFZ8%3D'\n\ncreate external data source log_data_parquet\nwith (Location='https://datalakedemodp203.dfs.core.windows.net/parquet',\ncredential = sastoken)\n\ncreate external file format ParquetTextFileFormat with(\n    FORMAT_TYPE=PARQUET,\n    DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n        )\n\n--for parquet files, set all columns as varchar and all columns headers should not have any space\nCREATE EXTERNAL TABLE [logdata_parquet] \n(\n    [CorrelationId] [varchar](200) NULL,\n\t[OperationName] [varchar](200) NULL,\n\t[Status] [varchar](100) NULL,\n\t[EventCategory] [varchar](100) NULL,\n\t[Level] [varchar](100) NULL,\n\t[Time] [varchar] (500) NULL,\n\t[Subscription] [varchar](200) NULL,\n\t[EventInitiated by] [varchar](1000) NULL,\n\t[ResourceType] [varchar](1000) NULL,\n\t[ResourceGroup] [varchar](1000) NULL,\n    [Resource] [varchar](2000) NULL)\nWITH (\n LOCATION = 'Log.parquet',\n    DATA_SOURCE = log_data_parquet,  \n    FILE_FORMAT = ParquetTextFileFormat\n)\nuse appdb\ngo\nselect * from [logdata_parquet]\n\nSELECT [Operation name] , COUNT([Operation name]) as [Operation Count]\nFROM [logdata_parquet]\nGROUP BY [Operation name]\nORDER BY [Operation Count]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "appdb",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

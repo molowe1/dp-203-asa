@@ -1,0 +1,17 @@
+{
+	"name": "polybase-load-example",
+	"properties": {
+		"content": {
+			"query": "select * from sys.database_scoped_credentials\n\nselect * from sys.external_data_sources\n\nselect * from sys.external_file_formats\n\nSELECT * FROM [parquet_pool]\n\ndrop table [parquet_POOL]\n\ncreate table parquet_POOL\nwith (\n    distribution=ROUND_ROBIN\n)\nAS\nselect *\nfrom [pool_table]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dp2003pooldemo",
+				"poolName": "dp2003pooldemo"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

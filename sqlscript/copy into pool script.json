@@ -1,0 +1,17 @@
+{
+	"name": "copy into pool script",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE [pool_table] \n(\n    [CorrelationId] [varchar](200) NULL,\n\t[OperationName] [varchar](200) NULL,\n\t[Status] [varchar](100) NULL,\n\t[EventCategory] [varchar](100) NULL,\n\t[Level] [varchar](100) NULL,\n\t[Time] [datetime] NULL,\n\t[Subscription] [varchar](200) NULL,\n\t[EventInitiated by] [varchar](1000) NULL,\n\t[ResourceType] [varchar](1000) NULL,\n\t[ResourceGroup] [varchar](1000) NULL,\n    [Resource] [varchar](2000) NULL\n    )\n\ncopy into [pool_table] from 'https://datalakedemodp203.blob.core.windows.net/csv/Log.csv'\nwith (\n        file_type = 'CSV',\n        CREDENTIAL=(IDENTITY='Storage Account Key', SECRET='aTVPvtKPOE2ZdZm8o2uCG42KJM93qYnySCktFMb5TEjQiNbAoTf35s1Ha1ATgAg12cPbXxki7In++AStaTR/Uw=='),\n        FIRSTROW=2\n)\nSELECT * FROM [pool_table]\n\ndrop table bikehire_db\nCREATE TABLE bikehire_db (\n    VendorID INT NULL, \n    tpep_pickup_datetime [datetime] NULL, \n    tpep_dropoff_datetime [datetime] NULL,\n    trip_distance INT NULL, \n    PULocationID INT NULL, \n    DOLocationID INT NULL, \n    trip_time VARCHAR (100) NULL,\n    trip_speed FLOAT NULL\n)\n\nSELECT * FROM [bikehire_db]\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dp2003pooldemo",
+				"poolName": "dp2003pooldemo"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

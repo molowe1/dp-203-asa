@@ -1,0 +1,17 @@
+{
+	"name": "pool-csv-script",
+	"properties": {
+		"content": {
+			"query": "create master key encryption by PASSWORD = 'dp203@password' --encrypt the password\n\ncreate database scoped credential AzureStorageAccAccessKey\nwith identity = 'datalakedemodp203'\n, secret = 'aTVPvtKPOE2ZdZm8o2uCG42KJM93qYnySCktFMb5TEjQiNbAoTf35s1Ha1ATgAg12cPbXxki7In++AStaTR/Uw=='\n\ndrop external data SOURCE log_data\ncreate external data source log_data\nwith (Location='abfss://csv@datalakedemodp203.dfs.core.window.net/csv',\ncredential = AzureStorageAccAccessKey,\nTYPE = HADOOP)\n\ncreate external file format TextFileFormat with(\n    FORMAT_TYPE=DELIMITEDTEXT,\n    FORMAT_OPTIONS(\n        FIELD_TERMINATOR = ',',\n        first_row = 2\n        )\n)\n\nCREATE EXTERNAL TABLE [logdata]\n(\n    [Correlation id] [varchar](200) NULL,\n\t[Operation name] [varchar](200) NULL,\n\t[Status] [varchar](100) NULL,\n\t[Event category] [varchar](100) NULL,\n\t[Level] [varchar](100) NULL,\n\t[Time] [varchar](200) NULL,\n\t[Subscription] [varchar](200) NULL,\n\t[Event initiated by] [varchar](1000) NULL,\n\t[Resource type] [varchar](1000) NULL,\n\t[Resource group] [varchar](1000) NULL,\n    [Resource] [varchar](2000) NULL)\nWITH (\n LOCATION = '/Log.csv',\n    DATA_SOURCE = log_data,  \n    FILE_FORMAT = TextFileFormat\n)\n\nselect * from [logdata]\n\nSELECT [Operation name] , COUNT([Operation name]) as [Operation Count]\nFROM dbo.[logdata]\nGROUP BY [Operation name]\nORDER BY [Operation Count]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dp2003pooldemo",
+				"poolName": "dp2003pooldemo"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

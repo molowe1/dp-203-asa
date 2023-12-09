@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 3",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE [logdata]\n(\n    [Correlation id] [varchar](200) NULL,\n\t[Operation name] [varchar](200) NULL,\n\t[Status] [varchar](100) NULL,\n\t[Event category] [varchar](100) NULL,\n\t[Level] [varchar](100) NULL,\n\t[Time] [datetime] NULL,\n\t[Subscription] [varchar](200) NULL,\n\t[Event initiated by] [varchar](1000) NULL,\n\t[Resource type] [varchar](1000) NULL,\n\t[Resource group] [varchar](1000) NULL,\n    [Resource] [varchar](2000) NULL\n)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "appdb",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

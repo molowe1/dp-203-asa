@@ -1,0 +1,17 @@
+{
+	"name": "openrowset",
+	"properties": {
+		"content": {
+			"query": "select * FROM\nOPENROWSET (bulk 'https://datalakedemodp203.blob.core.windows.net/parquet/*.parquet',\nformat='parquet') as [parquet_temp]\n\nselect * FROM\nOPENROWSET (BULK 'https://datalakedemodp203.blob.core.windows.net/csv/draft.csv',\nformat='csv') as [CSV_temp]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dummy_table",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

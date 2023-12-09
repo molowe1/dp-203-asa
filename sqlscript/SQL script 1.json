@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "select top (10) from bikehire_db\n\nWITH MarchData AS (\n    SELECT\n        PULocationID,\n        DATEPART(week, tpep_pickup_datetime) AS week_number,\n        AVG(trip_speed) OVER () AS avg_speed\n    FROM [dbo].[bikehire_db]\n    WHERE\n        YEAR(tpep_pickup_datetime) = 2021\n        AND MONTH(tpep_pickup_datetime) = 3\n        group by PULocationID, tpep_pickup_datetime, trip_speed\n)\nSELECT TOP 5\n    PULocationID,\n    week_number,\n    RANK() OVER (PARTITION BY week_number ORDER BY COUNT(*) DESC) AS rank\nFROM MarchData\nWHERE trip_speed < avg_speed\nORDER BY week_number, rank;\n\ndrop table bikehire\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dp2003pooldemo",
+				"poolName": "dp2003pooldemo"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

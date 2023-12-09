@@ -1,0 +1,17 @@
+{
+	"name": "partition example 2",
+	"properties": {
+		"content": {
+			"query": "-- Lab - Switching Partitions\n\nCREATE TABLE [logdata_new]\nWITH\n(\nDISTRIBUTION = HASH ([Operationname]),\nPARTITION ( [Time] RANGE RIGHT FOR VALUES\n            ('2023-02-01','2023-03-01','2023-04-01')\n\n   ) ) \nAS\nSELECT * \nFROM [dbo].[pool_table]\nWHERE 1=2\n\nALTER TABLE [dbo].[pool_table] SWITCH PARTITION 2 TO [logdata_new] PARTITION 1;\n\nSELECT count(*) FROM [logdata_new]\nSELECT FORMAT(Time,'yyyy-MM-dd') AS dt,COUNT(*) FROM logdata_new\nGROUP BY FORMAT(Time,'yyyy-MM-dd')\n\n-- See the data in the original table\n\nSELECT FORMAT(Time,'yyyy-MM-dd') AS dt,COUNT(*) FROM [dbo].[pool_table]\nGROUP BY FORMAT(Time,'yyyy-MM-dd')\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dp2003pooldemo",
+				"poolName": "dp2003pooldemo"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

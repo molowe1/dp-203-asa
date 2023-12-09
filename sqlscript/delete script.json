@@ -1,0 +1,17 @@
+{
+	"name": "delete script",
+	"properties": {
+		"content": {
+			"query": "DROP EXTERNAL TABLE [logdata]\n\nDROP EXTERNAL TABLE [logdata_parquet]\n\nDROP EXTERNAL DATA SOURCE log_data\n\nDROP EXTERNAL DATA SOURCE log_data_parquet\n\nDROP EXTERNAL DATA SOURCE log_data_2\n\nDROP DATABASE SCOPED CREDENTIAL sastoken\n\nDROP DATABASE SCOPED CREDENTIAL sastoken2\n\ndrop EXTERNAL file FORMAT ParquetTextFileFormat\n\ndrop EXTERNAL file FORMAT TextFileFormat\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "appdb",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
