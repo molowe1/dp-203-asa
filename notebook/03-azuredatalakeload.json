@@ -1,0 +1,91 @@
+{
+	"name": "03-azuredatalakeload",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "d7e5a34a-b171-484d-aadd-1d162de4f532"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/976a6163-6cea-4dff-9b57-f63c294f349e/resourceGroups/dp-203-demo/providers/Microsoft.Synapse/workspaces/dwhsection4/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://dwhsection4.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"# Lab - Spark Pool - Load data\n",
+					"# Lab - Spark Pool - Grouping your results\n",
+					"\n",
+					"# When it comes to accessing Azure Data Lake , we are going to use the abfs protocol\n",
+					"# This is the Azure Blob File System driver that is also part of Apache Hadoop\n",
+					"# structure of the URI - abfs[s]://file_system@account_name.dfs.core.windows.net/<path>/<path>/<file_name>\n",
+					"\n",
+					"\n",
+					"# spark.read is a method that can be used to read data from various file formats - Parquet,Avro etc\n",
+					"df = spark.read.load('https://datalakedemodp203.blob.core.windows.net/parquet/Log.parquet', format='parquet')\n",
+					"display(df)\n",
+					"\n",
+					"# Only projecting certain columns\n",
+					"from pyspark.sql.functions import col\n",
+					"newdf=df.select(col(\"Correlationid\"),col(\"Operationname\"),col(\"Resourcegroup\"))\n",
+					"display(newdf)\n",
+					"\n",
+					"# Show rows where Resource Group is NULL\n",
+					"from pyspark.sql.functions import col\n",
+					"nulldf=df.filter(col(\"ResourceGroup\").isNull())\n",
+					"display(nulldf)\n",
+					"\n",
+					"# Displaying the count of rows\n",
+					"# Using f allows for formatted string literals\n",
+					"rows=nulldf.count()\n",
+					"print(f\"The number of rows : {rows}\")\n",
+					"\n",
+					"# Using group by\n",
+					"summaryRows=df.groupBy(\"ResourceGroup\").count()\n",
+					"display(summaryRows)\n",
+					"\n",
+					""
+				],
+				"execution_count": 4
+			}
+		]
+	}
+}
