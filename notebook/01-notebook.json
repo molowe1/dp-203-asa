@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "1",
-				"spark.autotune.trackingId": "cce25c84-abd7-47de-89ba-592a1d1b1649"
+				"spark.autotune.trackingId": "388ec300-a917-4125-aa7e-c28a333e9178"
 			}
 		},
 		"metadata": {
@@ -59,7 +59,7 @@
 					"val maxValue=dataSet.max\n",
 					"maxValue"
 				],
-				"execution_count": 1
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
