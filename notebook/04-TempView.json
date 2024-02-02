@@ -1,0 +1,90 @@
+{
+	"name": "04-TempView",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "dd799cbb-4dab-464f-999b-8100dd9917ce"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/976a6163-6cea-4dff-9b57-f63c294f349e/resourceGroups/dp-203-demo/providers/Microsoft.Synapse/workspaces/dwhsection4/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://dwhsection4.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"# Lab - Creating a temporary view\n",
+					"\n",
+					"df = spark.read.load('abfss://parquet@datalakedemodp203.dfs.core.windows.net/Log.parquet', format='parquet')\n",
+					"\n",
+					"df.createOrReplaceTempView(\"logdata\")\n",
+					"\n",
+					"sql_1=spark.sql(\"SELECT Operationname, count(Operationname) FROM logdata GROUP BY Operationname\")\n",
+					"sql_1.show()"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"SELECT Operationname, count(Operationname) FROM logdata GROUP BY Operationname"
+				],
+				"execution_count": 9
+			}
+		]
+	}
+}
