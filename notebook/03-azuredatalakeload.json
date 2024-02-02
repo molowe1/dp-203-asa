@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "50a9eec2-8637-4c34-a6c7-7665130e4af2"
+				"spark.autotune.trackingId": "4a7b3b71-2fda-43a7-bf1d-ac377d6be393"
 			}
 		},
 		"metadata": {
@@ -59,7 +59,8 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"# Lab - Spark Pool - Load data\n",
@@ -75,7 +76,55 @@
 					"display(df)\n",
 					""
 				],
-				"execution_count": 1
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# Only projecting certain columns\n",
+					"from pyspark.sql.functions import col\n",
+					"newdf=df.select(col(\"Correlationid\"),col(\"Operationname\"),col(\"Resourcegroup\"))\n",
+					"display(newdf)\n",
+					"\n",
+					""
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# Show rows where Resource Group is NULL\n",
+					"from pyspark.sql.functions import col\n",
+					"nulldf=df.filter(col(\"ResourceGroup\").isNull())\n",
+					"display(nulldf)\n",
+					"\n",
+					""
+				],
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -91,27 +140,36 @@
 					}
 				},
 				"source": [
-					"# Only projecting certain columns\n",
-					"from pyspark.sql.functions import col\n",
-					"newdf=df.select(col(\"Correlationid\"),col(\"Operationname\"),col(\"Resourcegroup\"))\n",
-					"display(newdf)\n",
-					"\n",
-					"# Show rows where Resource Group is NULL\n",
-					"from pyspark.sql.functions import col\n",
-					"nulldf=df.filter(col(\"ResourceGroup\").isNull())\n",
-					"display(nulldf)\n",
-					"\n",
 					"# Displaying the count of rows\n",
 					"# Using f allows for formatted string literals\n",
 					"rows=nulldf.count()\n",
 					"print(f\"The number of rows : {rows}\")\n",
 					"\n",
+					""
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
 					"# Using group by\n",
 					"summaryRows=df.groupBy(\"ResourceGroup\").count()\n",
 					"display(summaryRows)\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 7
 			}
 		]
 	}
