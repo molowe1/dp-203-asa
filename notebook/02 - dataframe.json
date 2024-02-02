@@ -1,0 +1,76 @@
+{
+	"name": "02 - dataframe",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "95d5145b-14f2-4433-9ddb-502a37fb5528"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/976a6163-6cea-4dff-9b57-f63c294f349e/resourceGroups/dp-203-demo/providers/Microsoft.Synapse/workspaces/dwhsection4/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://dwhsection4.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"# Lab - Spark Pool - With Python\n",
+					"# Here we are creating a data frame\n",
+					"\n",
+					"courses = [(1,'AZ-900',10.99),(2,'DP-203',11.99) ,(3,'AZ-104',12.99)]\n",
+					"df = spark.createDataFrame(courses, ['Id', 'Name', 'Price'])\n",
+					"df.show()\n",
+					"\n",
+					"# Then here we are descending the rows based on the value in the price column\n",
+					"\n",
+					"from pyspark.sql.functions import desc\n",
+					"from pyspark.sql.functions import col\n",
+					"\n",
+					"# Here col is a class that is used to represent a new column that will be constructed based on the input column data\n",
+					"# You can use different variations here , col(\"columnname\") or $\"columnname\", df(\"columnname\")\n",
+					"\n",
+					"sorteddf=df.sort(col(\"Price\").desc())\n",
+					"sorteddf.show()"
+				],
+				"execution_count": 2
+			}
+		]
+	}
+}
