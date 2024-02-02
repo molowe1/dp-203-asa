@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "95d5145b-14f2-4433-9ddb-502a37fb5528"
+				"spark.autotune.trackingId": "0067982e-0ac6-4d06-a828-2287d4c8f71c"
 			}
 		},
 		"metadata": {
@@ -58,6 +58,24 @@
 					"df = spark.createDataFrame(courses, ['Id', 'Name', 'Price'])\n",
 					"df.show()\n",
 					"\n",
+					""
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"# Then here we are descending the rows based on the value in the price column\n",
 					"\n",
 					"from pyspark.sql.functions import desc\n",
@@ -69,7 +87,7 @@
 					"sorteddf=df.sort(col(\"Price\").desc())\n",
 					"sorteddf.show()"
 				],
-				"execution_count": 2
+				"execution_count": null
 			}
 		]
 	}
