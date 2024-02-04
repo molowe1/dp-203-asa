@@ -1,0 +1,187 @@
+{
+	"name": "06-pythontoadb",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "35e457a0-8101-46a9-9277-dba81d33d8bd"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/976a6163-6cea-4dff-9b57-f63c294f349e/resourceGroups/dp-203-demo/providers/Microsoft.Synapse/workspaces/dwhsection4/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://dwhsection4.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"df = spark.read.option(\"header\",\"true\").csv(\"abfss://csv@datalakedemodp203.dfs.core.windows.net/Log.csv\")\n",
+					"display(df)\n",
+					" \n",
+					"# If you want to use SQL statements against your data frame, you can create a view on top of the data frame\n",
+					" \n",
+					"df.createOrReplaceTempView(\"Logdata\")\n",
+					""
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"SELECT * FROM Logdata"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# You can also use PySpark as it is to look at the data\n",
+					"# Basically use the SQL API to work with your data\n",
+					" \n",
+					"sqldf=spark.sql(\"SELECT * FROM Logdata\")\n",
+					"display(sqldf)"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# To write to pooldb\n",
+					"# We need to match the schema properly\n",
+					"# Make sure the Azure admin has the storage blob reader and contributor role\n",
+					"    \n",
+					"from pyspark.sql.types import StructType,StringType,TimestampType\n",
+					"\n",
+					"dataSchema = StructType() \\\n",
+					"    .add(\"Correlation id\", StringType(), True) \\\n",
+					"    .add(\"Operation name\", StringType(), True) \\\n",
+					"    .add(\"Status\", StringType(), True) \\\n",
+					"    .add(\"Event category\",StringType(), True) \\\n",
+					"    .add(\"Level\",StringType(),True) \\\n",
+					"    .add(\"Time\", TimestampType(), True) \\\n",
+					"    .add(\"Subscription\",StringType(), True) \\\n",
+					"    .add(\"Event initiated by\", StringType(), True) \\\n",
+					"    .add(\"Resource type\",StringType(),True) \\\n",
+					"    .add(\"Resource group\",StringType(),True) \\\n",
+					"    .add(\"Resource\",StringType(),True)\n",
+					"\n",
+					"df = spark.read.format(\"csv\") \\\n",
+					".option(\"header\",True) \\\n",
+					".schema(dataSchema) \\\n",
+					".load(\"abfss://csv@datalakedemodp203.dfs.core.windows.net/Log.csv\")\n",
+					"\n",
+					"display(df) "
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import com.microsoft.spark.sqlanalytics\n",
+					"from com.microsoft.spark.sqlanalytics.Constants import Constants\n",
+					"\n",
+					"df.write \\\n",
+					"    .option(Constants.SERVER,\"\") \\\n",
+					"    .option(Constants.USER,\"\") \\\n",
+					"    .option(Constants.PASSWORD,\"\") \\\n",
+					"    .option(Constants.DATA_SOURCE,\"adf\") \\\n",
+					"    .option(Constants.TEMP_FOLDER,\"abfss://staging@datalakedemodp203.dfs.core.windows.net\") \\\n",
+					"    .option(Constants.STAGING_STORAGE_ACCOUNT_KEY,\"\") \\\n",
+					"    .mode(\"overwrite\") \\\n",
+					"    .synapsesql(\"adf.dbo.logdata\") "
+				],
+				"execution_count": 8
+			}
+		]
+	}
+}
